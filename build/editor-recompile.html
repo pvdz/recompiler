@@ -14,52 +14,52 @@
   <body>
     <div id="input-wrapper">
       <textarea id="input" wrap=off nowrap=true spellcheck=false autocapitalize=false autocorrect=false >
-        console.warn("code (re)started");
-
-        function run(){
-        var counter = 0;
-        setInterval(function(){
-        ++counter;
-
-        var c = canvas.getContext('2d');
-        c.clearRect(0,0,canvas.width,canvas.height);
-        c.fillStyle = 'black';
-        c.fillRect(125,125,250,250);
-
         c.save();
-        c.translate(500,400);
-        c.rotate(-(counter+50%314)/10);
-        c.fillStyle = 'green';
-        c.fillRect(-50, -50, 100, 100);
-        c.restore();
+console.warn("code (re)started");
 
-        var gradient = c.createLinearGradient(0,0,0,200);
-        gradient.addColorStop(0, 'yellow');
-        gradient.addColorStop(0.5, 'red');
+function run(){
+  var counter = 0;
+  setInterval(function(){
+    ++counter;
 
-        c.save();
-        c.translate(250,250);
-        c.rotate((counter%314)/25);
-        c.fillStyle = gradient;
-        c.fillRect(-100,-100,200,200);
-        c.rotate((counter+50%314)/25);
-        c.fillStyle = 'blue';
-        c.fillRect(-90,-90,180,180);
-        c.restore();
+    var c = canvas.getContext('2d');
+    c.clearRect(0,0,canvas.width,canvas.height);
+    c.fillStyle = 'black';
+    c.fillRect(125,125,250,250);
 
-        for (var i=0; i<2; ++i) {
-        c.save();
-        c.translate(75+i*150,75);
-        c.rotate((counter+50%314)/10);
-        c.fillStyle = 'red';
-        c.fillRect(-50, -50, 100, 100);
-        c.restore();
-        }
+    c.save();
+    c.translate(500,400);
+    c.rotate(-(counter+50%314)/10);
+    c.fillStyle = 'green';
+    c.fillRect(-50, -50, 100, 100);
+    c.restore();
 
-        }, 50);
-        }
+    var gradient = c.createLinearGradient(0,0,0,200);
+    gradient.addColorStop(0, 'yellow');
+    gradient.addColorStop(0.5, 'red');
 
-        run();
+    c.translate(250,250);
+    c.rotate((counter%314)/25);
+    c.fillStyle = gradient;
+    c.fillRect(-100,-100,200,200);
+    c.rotate((counter+50%314)/25);
+    c.fillStyle = 'blue';
+    c.fillRect(-90,-90,180,180);
+    c.restore();
+
+    for (var i=0; i<2; ++i) {
+    c.save();
+    c.translate(75+i*150,75);
+    c.rotate((counter+50%314)/10);
+    c.fillStyle = 'red';
+    c.fillRect(-50, -50, 100, 100);
+    c.restore();
+    }
+
+  }, 50);
+}
+
+run();
       </textarea>
     </div>
     <div id="output">
