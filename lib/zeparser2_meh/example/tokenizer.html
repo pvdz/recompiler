@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+    <head>
+        <title>
+            Tokenizer example
+        </title>
+    </head>
+    <body>
+    <script src="../src/tok.js"></script>
+    <script>
+        var testString = '/foo/\u0069';
+        var exprMatrix = [true, true];
+        var tok = new Tok(testString);
+
+        var protect = 1000;
+        var n = 0;
+        do {
+          tok.lastValue = null;
+          var next = tok.nextWhiteToken(exprMatrix[n]);
+          console.log(next, Tok[next], '['+tok.pos+']');
+          ++n;
+        } while (--protect && next != EOF);
+        if (!protect) console.warn('endless loop');
+    </script>
+    </body>
+</html>
