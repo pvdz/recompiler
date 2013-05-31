@@ -1,0 +1,36 @@
+<!doctype html>
+  <body>
+    <script src="../lib/zeparser2/src/tok.js"></script>
+    <script src="../lib/zeparser2/src/par.js"></script>
+    <script src="../src/index.js"></script>
+    <script>
+      var tests = [
+        'var x = 5;',
+        'var foo = function(){};',
+        'function foo(){}',
+        'var x = 5; var foo = function(){};',
+        'var x = 5; function foo(){}',
+        'var x = 5; (function (){});',
+        'var x = 5; (function (){ var y = stuff(); });',
+        'var x = 5; (function (){ var y = stuff(); (function (){ var z = idontknow(); }) });',
+        'ajax(\'foo.js\', function(str){ console.log(str); });',
+        'var foo = "hello world"; function show(){ console.log(foo, "5"); } show("random");',
+        'function evenNow(){ var foo = "hello world"; function show(){ console.log(foo, "5"); } show("random"); }',
+        'A; function B(){} C;',
+
+      ];
+
+      for (var i=0; i<tests.length; ++i) {
+        try {
+          var test = tests[i];
+          if (test instanceof Array) test = test[0];
+          console.log(' input:',test);
+          console.log('output:',new Recompiler(test).init().data.map(function(d){ return d.code; }));
+        } catch (e) {
+          console.error("fail");
+        }
+      }
+
+    </script>
+
+  </body>

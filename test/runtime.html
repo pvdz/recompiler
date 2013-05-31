@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Recompiler live demo</title>
+  </head>
+  <body>
+    <script src="../lib/zeparser2/src/tok.js"></script>
+    <script src="../lib/zeparser2/src/par.js"></script>
+    <script src="../index.js"></script>
+    <p>
+    The ability to rewrite JavaScript on the fly is a huge help to real-time editors. Changing a number to immediately reflect the change in your app without having to recompile or even refresh. More importantly, you don't have to click through your app to get to the point where you want to test it.
+    </p><p>
+    This submission concerns itself with rewriting the original JavaScript and adding some boilerplate code in such a way that it suddenly becomes possible to modify the code in real time, without much overhead or additional issues. This happens purely on the client-side, purely in JS, without need to access to the core engine.
+    </p><p>
+    There is mainly one issue, which you can either discover for yourself or wait for me to explain it in detail, hopefully resulting in resolving that issue.
+    </p>
+    <textarea id="input" style="float:left; width: 45%; height: 500px;">
+      var canvas = document.createElement('canvas');
+      canvas.width = 500;
+      canvas.height = 500;
+      canvas.style.width = '500px';
+      canvas.style.height = '500px';
+      document.getElementById('output').appendChild(canvas);
+      setInterval(function(){
+
+
+
+        // ########   change me!   #########
+        var n = 5;
+        var colors = ['red','blue','orange','pink','black'];
+
+
+        var context = canvas.getContext('2d');
+        for (var i=0; i<n; ++i) {
+          context.fillStyle = colors[Math.floor(Math.random()*colors.length)];
+          context.fillRect(20+i*50, 10, 40, 40);
+        }
+
+      },50);
+    </textarea>
+    <div id="output" style="border: 1px solid black; height: 500px; margin-left: 50%;">
+
+    </div>
+
+
+    <script>
+      var input = document.getElementById('input');
+      var output = document.getElementById('output');
+
+      var source = input.value;
+      var rc = new Recompiler(source, 'state');
+      var state = rc.init();
+      state.start();
+
+      input.onkeyup = function(e){
+        if (e.target.value != source) {
+          rc.update(source=input.value, state);
+        }
+      };
+    </script>
+
+  </body>
+</html>

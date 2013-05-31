@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Recompiler live demo</title>
+    <style>
+      body { position: relative; height: 100%; width: 100%; overflow: hidden; padding:0; margin:0; }
+
+      #input-wrapper { float:left; width:60%; height:100%; box-sizing: border-box; padding: 0 5px 0 5px; }
+      #input { float:left; width: 100%; height:1000px; padding: 5px; box-sizing: border-box; font-size: 30px; }
+      iframe { position: relative; border: 1px solid black; height: 100%; width: 40%; margin:0; box-sizing: border-box; overflow:auto; padding:0;}
+      #iframes { height: 100%; }
+      canvas { width:100%; height:100%; box-sizing: border-box; }
+    </style>
+  </head>
+  <body>
+    <script>document.domain = 'localhost';</script>
+    <div id="input-wrapper">
+      <textarea id="input" wrap=off nowrap=true spellcheck=false autocapitalize=false autocorrect=false >
+        console.warn("code (re)started");
+
+        function run(){
+        var counter = 0;
+        setInterval(function(){
+        ++counter;
+
+        var c = canvas.getContext('2d');
+        c.clearRect(0,0,canvas.width,canvas.height);
+        c.fillStyle = 'black';
+        c.fillRect(125,125,250,250);
+
+        c.save();
+        c.translate(500,400);
+        c.rotate(-(counter+50%314)/10);
+        c.fillStyle = 'green';
+        c.fillRect(-50, -50, 100, 100);
+        c.restore();
+
+        var gradient = c.createLinearGradient(0,0,0,200);
+        gradient.addColorStop(0, 'yellow');
+        gradient.addColorStop(0.5, 'red');
+
+        c.save();
+        c.translate(250,250);
+        c.rotate((counter%314)/25);
+        c.fillStyle = gradient;
+        c.fillRect(-100,-100,200,200);
+        c.rotate((counter+50%314)/25);
+        c.fillStyle = 'blue';
+        c.fillRect(-90,-90,180,180);
+        c.restore();
+
+        for (var i=0; i<2; ++i) {
+        c.save();
+        c.translate(75+i*150,75);
+        c.rotate((counter+50%314)/10);
+        c.fillStyle = 'red';
+        c.fillRect(-50, -50, 100, 100);
+        c.restore();
+        }
+
+        }, 50);
+        }
+
+        run();
+      </textarea>
+    </div>
+    <div id="iframes">
+      <!-- iframe dynamically generated -->
+    </div>
+
+    <script src="../lib/zeparser2/src/tok.js"></script>
+    <script src="../lib/zeparser2/src/par.js"></script>
+    <script>
+      var input = document.getElementById('input');
+
+      if (window.localStorage && localStorage.getItem('recompiler-code')) {
+        input.value = localStorage.getItem('recompiler-code');
+      }
+
+      input.onkeyup = function(e){
+        if (e.target.value != source) {
+          var newFrame = createIframe(source=input.value);
+          document.getElementById('iframes').replaceChild(newFrame, iframe);
+          iframe = newFrame;
+          if (window.localStorage) localStorage.setItem('recompiler-code', source);
+        }
+      };
+
+      var source = input.value;
+      var iframe = createIframe(source);
+
+      function createIframe(content){
+        var iframe = document.createElement('iframe');
+        document.getElementById('iframes').appendChild(iframe);
+
+        var canvas = iframe.contentWindow.canvas = iframe.contentDocument.createElement('canvas');
+        iframe.contentDocument.body.appendChild(canvas);
+
+        var script = iframe.contentDocument.createElement('script');
+        script.textContent = content;
+        iframe.contentDocument.body.appendChild(script);
+
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        input.style.height = canvas.offsetHeight+'px';
+
+        return iframe;
+      }
+    </script>
+  </body>
+</html>

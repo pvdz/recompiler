@@ -1,0 +1,43 @@
+<!doctype html>
+<body><script>
+
+//  var repeat = function(text){
+//    setInterval(function(){ console.log(text); }, 500);
+//  };
+//  repeat("Repeat me!");
+
+
+  $data = [
+  {
+    args: '',
+    body: 'console.log(text);',
+    version: 0
+  }, {
+    args: 'text',
+    body: 'setInterval(getFunction(0, $compiler), 500);',
+    version: 0,
+  }
+];
+
+var getFunction = function(fid, $compiler){
+  var func = null;
+  var version = -1;
+  return function(){
+    if (!func || $data[fid].version !== version) {
+      console.log("Recompiling!");
+      func = $compiler('(function('+$data[fid].args+'){ ' +
+        'var $compiler = function(){ return eval(arguments[0]); };' +
+        $data[fid].body+'})'
+      );
+      version = $data[0].version;
+    }
+    return func.apply(this, Array.prototype.slice.call(arguments, 0));
+  };
+};
+
+var foo = "jee";
+var repeat = getFunction(1, eval);
+repeat("Repeat me!");
+
+
+</script></body>

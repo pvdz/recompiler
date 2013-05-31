@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Recompiler live demo</title>
+    <style>
+      body { position: relative; height: 100%; width: 100%; overflow: hidden; padding:0; margin:0; }
+
+      #input-wrapper { float:left; width:60%; height:100%; box-sizing: border-box; padding: 0 5px 0 5px; }
+      #input { float:left; width: 100%; height:1000px; padding: 5px; box-sizing: border-box; font-size: 30px; }
+      #output { position: relative; border: 1px solid black; height: 80%; margin-left: 60%; box-sizing: border-box; }
+      canvas { width:100%; height:100%; box-sizing: border-box; }
+    </style>
+  </head>
+  <body>
+    <div id="input-wrapper">
+      <textarea id="input" wrap=off nowrap=true spellcheck=false autocapitalize=false autocorrect=false >
+        console.warn("code (re)started");
+
+        function run(){
+        var counter = 0;
+        setInterval(function(){
+        ++counter;
+
+        var c = canvas.getContext('2d');
+        c.clearRect(0,0,canvas.width,canvas.height);
+        c.fillStyle = 'black';
+        c.fillRect(125,125,250,250);
+
+        c.save();
+        c.translate(500,400);
+        c.rotate(-(counter+50%314)/10);
+        c.fillStyle = 'green';
+        c.fillRect(-50, -50, 100, 100);
+        c.restore();
+
+        var gradient = c.createLinearGradient(0,0,0,200);
+        gradient.addColorStop(0, 'yellow');
+        gradient.addColorStop(0.5, 'red');
+
+        c.save();
+        c.translate(250,250);
+        c.rotate((counter%314)/25);
+        c.fillStyle = gradient;
+        c.fillRect(-100,-100,200,200);
+        c.rotate((counter+50%314)/25);
+        c.fillStyle = 'blue';
+        c.fillRect(-90,-90,180,180);
+        c.restore();
+
+        for (var i=0; i<2; ++i) {
+        c.save();
+        c.translate(75+i*150,75);
+        c.rotate((counter+50%314)/10);
+        c.fillStyle = 'red';
+        c.fillRect(-50, -50, 100, 100);
+        c.restore();
+        }
+
+        }, 50);
+        }
+
+        run();
+      </textarea>
+    </div>
+    <div id="output">
+      <canvas></canvas>
+    </div>
+
+    <script src="../lib/zeparser2/src/tok.js"></script>
+    <script src="../lib/zeparser2/src/par.js"></script>
+    <script src="../src/index.js"></script>
+    <script>
+      var input = document.getElementById('input');
+      var output = document.getElementById('output');
+
+      var canvas = document.querySelector('canvas');
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      input.style.height = canvas.offsetHeight+'px';
+
+      if (window.localStorage && localStorage.getItem('recompiler-code')) {
+        input.value = localStorage.getItem('recompiler-code');
+      }
+      var source = input.value;
+      var rc = new Recompiler(source, 'rc');
+      rc.run();
+
+      input.onkeyup = function(e){
+        if (e.target.value != source) {
+          rc.update(source=input.value);
+          if (window.localStorage) localStorage.setItem('recompiler-code', source);
+        }
+      };
+    </script>
+  </body>
+</html>

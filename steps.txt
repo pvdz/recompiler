@@ -1,0 +1,205 @@
+### step 1:
+
+setInterval(function(){ console.log("Hello, world!"); }, 500);
+
+### step 2:
+
+Extract function to getFunction
+
+### Step 3:
+
+Change to to use Function()
+
+### Step 4:
+
+Move to $data
+
+### Step 5:
+
+Assign function ids
+
+### Step 6:
+
+Attempt recompilation (will fail)
+
+### Step 7:
+
+Add function layer to getFunction (and call)
+
+### Step 8:
+
+Attempt recompilation (will succeed)
+
+$data = [
+  'console.log("Hello, world!");'
+];
+
+function getFunction(fid){
+  return function(){
+    return Function($data[fid])();
+  };
+}
+
+setInterval(getFunction(0), 500);
+
+// $data[0] = 'console.log("Hi back");'
+
+### Step 9:
+
+Example with func arg
+
+var log = function(text){ console.log(text); };
+setInterval(function(){ log("Hello, world!"); }, 500);
+
+### Step 10:
+
+Add func param to $data and getFunction
+
+### Step 11:
+
+Test, wont work
+
+### Step 12:
+
+Add .apply rather than call
+
+### Step 13:
+
+Test, works
+
+$data = [
+  {
+    args: 'text',
+    body: 'console.log(text);'
+  }, {
+    args: '',
+    body: 'log("Hello, world!");'
+  }
+];
+
+function getFunction(fid){
+  return function(){
+    return Function($data[fid].args, $data[fid].body).apply(this, Array.prototype.slice.call(arguments, 0));
+  };
+}
+
+var log = getFunction(0);
+setInterval(getFunction(1), 500);
+
+// $data[1].body = 'log("Recompiled");'
+
+### Step 14:
+
+Closure example
+
+var repeat = function(text){
+  setInterval(function(){ console.log(text); }, 500);
+};
+repeat("Hello");
+
+### Step 15:
+
+in/direct eval
+
+### Step 16:
+
+Change to eval
+
+function getFunction(fid){
+  return function(){
+    return eval('(function('+$data[fid].args+'){ '+$data[fid].body+'})')
+      .apply(this, Array.prototype.slice.call(arguments, 0));
+  };
+}
+
+### Step 17:
+
+Add $compiler arg and demonstrate indirect eval
+
+### Step 18:
+
+Compile $compiler in
+
+function getFunction(fid, $compiler){
+  return function(){
+    return $compiler(
+      '(function('+$data[fid].args+'){ ' +
+        'var $compiler = function(s){ return eval(s); };'+
+        $data[fid].body+
+      '})')
+      .apply(this, Array.prototype.slice.call(arguments, 0));
+  };
+}
+
+### Step 19:
+
+Use $compiler in $data scripts
+
+### Step 20:
+
+Proof it works
+
+$data = [
+  {
+    args: '',
+    body: 'console.log(text);'
+  }, {
+    args: 'text',
+    body: 'setInterval(getFunction(0, $compiler), 500);'
+  }
+];
+
+function getFunction(fid, $compiler){
+  return function(){
+    return $compiler(
+      '(function('+$data[fid].args+'){ ' +
+        'var $compiler = function(s){ return eval(s); };'+
+        $data[fid].body+
+      '})')
+      .apply(this, Array.prototype.slice.call(arguments, 0));
+  };
+}
+
+var repeat = getFunction(1, eval);
+repeat("Hello");
+
+// $data[0].body = 'console.log(text+", world!");'
+
+### Step 21:
+
+Demonstrate function declarations
+
+foo();
+function foo(){}
+->
+var foo = function(){};
+foo();
+
+### Step 22:
+
+Demonstrate named function expression
+
+setTimeout(function repeat(){ setTimeout(repeat, 500); }, 500);
+->
+setTimeout(function(){
+	var repeat = function(){
+		setTimeout(repeat, 500);
+	};
+	return repeat;
+}, 500);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
