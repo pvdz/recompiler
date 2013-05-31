@@ -14,7 +14,6 @@
   <body>
     <div id="input-wrapper">
       <textarea id="input" wrap=off nowrap=true spellcheck=false autocapitalize=false autocorrect=false >
-        c.save();
 console.warn("code (re)started");
 
 function run(){
@@ -38,6 +37,7 @@ function run(){
     gradient.addColorStop(0, 'yellow');
     gradient.addColorStop(0.5, 'red');
 
+    c.save();
     c.translate(250,250);
     c.rotate((counter%314)/25);
     c.fillStyle = gradient;
@@ -48,12 +48,12 @@ function run(){
     c.restore();
 
     for (var i=0; i<2; ++i) {
-    c.save();
-    c.translate(75+i*150,75);
-    c.rotate((counter+50%314)/10);
-    c.fillStyle = 'red';
-    c.fillRect(-50, -50, 100, 100);
-    c.restore();
+      c.save();
+      c.translate(75+i*150,75);
+      c.rotate((counter+50%314)/10);
+      c.fillStyle = 'red';
+      c.fillRect(-50, -50, 100, 100);
+      c.restore();
     }
 
   }, 50);
