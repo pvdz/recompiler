@@ -4,5 +4,5 @@ v1 and v2 were my original slides. They go through the code step-by-step and hav
 
 I've put the v1 and v2 here for ... well, whatever :)
 
-The talk will be released some time in the future and I'll hopefully remember to link to it here :) Till then, I think v1/v2 make more sense without the talk than v3 will.
+JSConf.us 2013 talk: http://www.youtube.com/watch?v=9HfWmdp9_I0
 

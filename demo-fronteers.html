@@ -1,0 +1,49 @@
+<!doctype html>
+<head><title>Demoooooooooooo</title></head>
+<body><script>
+
+//  var speak = function(text){ console.log(text); };
+//  setInterval(function(){
+//    speak("Woof!");
+//  }, 500);
+
+
+
+var $data = [
+  {
+    args: '',
+    body: 'console.log(text);',
+    version: 0,
+  }, {
+    args: 'text',
+    body: 'setInterval(getFunction(0, $compiler), 500);',
+    version: 0,
+  }
+];
+var getFunction = function(fid, $compile){
+  return function(){
+    var func = null;
+    var version = -1;
+    if (version !== $data[fid].version
+      || func === null) {
+console.log("compiling");
+      func = $compile('(function('+
+        $data[fid].args+
+        '){'+
+        'var $compiler = function(s){return eval(s);};'+
+        $data[fid].body+
+        '})'
+      );
+      version = $data[fid].version;
+    }
+    return func.apply(
+      this,
+      Array.prototype.slice.call(arguments, 0)
+    );
+  };
+};
+
+var speak = getFunction(0);
+setInterval(getFunction(1), 500);
+
+</script></body>
